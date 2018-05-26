@@ -10,7 +10,8 @@ let width: number;
 let height: number;
 let clientWidth: number;
 let clientHeight: number;
-let data: number[] = [];
+let data: number[][] = [];
+let currentLine: number[] | null = null;
 
 export function init(canvas: HTMLCanvasElement) {
     width = canvas.width;
@@ -30,13 +31,27 @@ export function clear() {
     data = [];
 }
 
+export function begin() {
+    currentLine = [];
+    data.push(currentLine);
+}
+
 export function draw(x: number, y: number) {
+    if (!currentLine) {
+        return;
+    }
     // as preserveDrawingBuffer defaults to false, the canvas is already cleared after draw, we don't need to clear it mannually
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
-    data.push((x / clientWidth - 0.5) * 2, -(y / clientHeight - 0.5) * 2);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-    gl.useProgram(program);
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.LINE_STRIP, 0, data.length / 2);
+    currentLine.push((x / clientWidth - 0.5) * 2, -(y / clientHeight - 0.5) * 2);
+    data.forEach(stripLine => {
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(stripLine), gl.STATIC_DRAW);
+        gl.useProgram(program);
+        gl.enableVertexAttribArray(positionAttributeLocation);
+        gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.LINE_STRIP, 0, stripLine.length / 2);
+    })
+}
+
+export function end() {
+    currentLine = null;
 }

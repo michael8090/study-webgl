@@ -18,9 +18,16 @@ class App extends React.Component<{}, State> {
                 basic.clear();
             }
         };
+        canvas.onmousedown = (e) => {
+            basic.begin();
+            basic.draw(e.layerX, e.layerY);
+        }
         canvas.onmousemove = e => {
             basic.draw(e.layerX, e.layerY);
         };
+        canvas.onmouseup = () => {
+            basic.end();
+        }
     }
     private startWaves(canvas: HTMLCanvasElement) {
         waves.init(canvas);
