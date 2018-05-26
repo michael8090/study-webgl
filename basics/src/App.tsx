@@ -1,20 +1,28 @@
 import * as React from 'react';
 import './App.css';
-import * as basic from './webgl/basic'
+// import * as basic from './webgl/basic'
+import * as waves from './webgl/waves';
 
 class App extends React.Component {
   private canvas: HTMLCanvasElement;
   public componentDidMount() {
     const {canvas} = this;
-    basic.init(canvas);
-    document.onkeyup = e => {
-      if (e.key === ' ') {
-        basic.clear();
-      }
+    // basic.init(canvas);
+    // document.onkeyup = e => {
+    //   if (e.key === ' ') {
+    //     basic.clear();
+    //   }
+    // }
+    // canvas.onmousemove = e => {
+    //   basic.draw(e.layerX, e.layerY);
+    // }
+    waves.init(canvas);
+    const t0 = Date.now();
+    function draw() {
+      waves.draw(Date.now() - t0);
+      requestAnimationFrame(draw);
     }
-    canvas.onmousemove = e => {
-      basic.draw(e.layerX, e.layerY);
-    }
+    draw();
   }
   public render() {
     return (
