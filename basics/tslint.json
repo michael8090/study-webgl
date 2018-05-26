@@ -5,5 +5,10 @@
       "config/**/*.js",
       "node_modules/**/*.ts"
     ]
+  },
+  "rules": {
+    "member-ordering": false,
+    "jsx-no-lambda": false,
+    "interface-name": false
   }
 }

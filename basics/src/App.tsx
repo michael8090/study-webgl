@@ -1,37 +1,74 @@
 import * as React from 'react';
 import './App.css';
-// import * as basic from './webgl/basic'
+import Demo from './Demo';
+import * as basic from './webgl/basic';
 import * as waves from './webgl/waves';
 
-class App extends React.Component {
-  private canvas: HTMLCanvasElement;
-  public componentDidMount() {
-    const {canvas} = this;
-    // basic.init(canvas);
-    // document.onkeyup = e => {
-    //   if (e.key === ' ') {
-    //     basic.clear();
-    //   }
-    // }
-    // canvas.onmousemove = e => {
-    //   basic.draw(e.layerX, e.layerY);
-    // }
-    waves.init(canvas);
-    const t0 = Date.now();
-    function draw() {
-      waves.draw(Date.now() - t0);
-      requestAnimationFrame(draw);
+const demos = ['basic', 'waves'];
+
+interface State {
+    demoName: string;
+}
+
+class App extends React.Component<{}, State> {
+    private startBasic(canvas: HTMLCanvasElement) {
+        basic.init(canvas);
+        document.onkeyup = e => {
+            if (e.key === ' ') {
+                basic.clear();
+            }
+        };
+        canvas.onmousemove = e => {
+            basic.draw(e.layerX, e.layerY);
+        };
     }
-    draw();
-  }
-  public render() {
-    return (
-      <div className="App">
-        <h4>press blankspace to clear the canvas</h4>
-        <canvas ref={c => this.canvas = c!} width="800" height="800" />
-      </div>
-    );
-  }
+    private startWaves(canvas: HTMLCanvasElement) {
+        waves.init(canvas);
+        const t0 = Date.now();
+        function draw() {
+            waves.draw(Date.now() - t0);
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+
+    public state = {
+        demoName: 'basic'
+    };
+
+    private demos = {
+        basic: (
+            <Demo
+                didMount={this.startBasic}
+                willUnmount={() => {
+                    document.onkeyup = null;
+                    basic.clear();
+                }}
+            >
+                <h4>press blankspace to clear the canvas</h4>
+            </Demo>
+        ),
+        waves: <Demo didMount={this.startWaves} />
+    };
+
+    public render() {
+        const { state } = this;
+        return (
+            <div className="App">
+                <label className="demo-selector">
+                    select demo
+                    <select value={state.demoName} onChange={e => {this.setState({demoName: e.target.value}); e.target.blur();}}>
+                        {demos.map(name => (
+                            <option value={name} key={name}>
+                                {name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <div key={state.demoName}>{this.demos[state.demoName]}</div>
+            </div>
+        );
+    }
 }
 
 export default App;

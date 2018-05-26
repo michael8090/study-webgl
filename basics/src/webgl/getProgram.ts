@@ -3,12 +3,12 @@ function getShader(gl: WebGLRenderingContext, source: string, type: number) {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw gl.getShaderInfoLog(shader);
+      throw new Error(source + ': \n' + gl.getShaderInfoLog(shader));
     }
     return shader;
 }
 
-export default function getProgram(gl: WebGLRenderingContext,vertString: string, fragString: string) {
+export default function getProgram(gl: WebGLRenderingContext, vertString: string, fragString: string) {
     const program = gl.createProgram();
     gl.attachShader(program, getShader(gl, vertString, gl.VERTEX_SHADER));
     gl.attachShader(program, getShader(gl, fragString, gl.FRAGMENT_SHADER));

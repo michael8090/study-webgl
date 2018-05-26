@@ -8,13 +8,17 @@ let positionAttributeLocation: number;
 let verticesBuffer: WebGLBuffer;
 let width: number;
 let height: number;
+let clientWidth: number;
+let clientHeight: number;
 let data: number[] = [];
 
 export function init(canvas: HTMLCanvasElement) {
-    width = canvas.clientWidth;
-    height = canvas.clientHeight;
+    width = canvas.width;
+    height = canvas.height; // it has to be from canvas.width and canvs.height, as it's the real pixels
+    clientWidth = canvas.clientWidth;
+    clientHeight = canvas.clientHeight;
     gl = canvas.getContext('webgl')!;
-    gl.viewport(0, 0, width, height);    
+    gl.viewport(0, 0, width, height); 
     program = getProgram(gl, basicVert, basicFrag)!;
     positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
     verticesBuffer = gl.createBuffer()!;
@@ -29,7 +33,7 @@ export function clear() {
 export function draw(x: number, y: number) {
     // as preserveDrawingBuffer defaults to false, the canvas is already cleared after draw, we don't need to clear it mannually
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
-    data.push((x / width - 0.5) * 2, -(y / height - 0.5) * 2);
+    data.push((x / clientWidth - 0.5) * 2, -(y / clientHeight - 0.5) * 2);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
     gl.useProgram(program);
     gl.enableVertexAttribArray(positionAttributeLocation);

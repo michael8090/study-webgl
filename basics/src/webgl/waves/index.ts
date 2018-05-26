@@ -13,10 +13,10 @@ let width: number;
 let height: number;
 
 export function init(canvas: HTMLCanvasElement) {
-    width = canvas.clientWidth;
-    height = canvas.clientHeight;
+    width = canvas.width;
+    height = canvas.height; // it has to be from canvas.width and canvs.height, as it's the real pixels
     gl = canvas.getContext('webgl')!;
-    gl.viewport(0, 0, width, height);    
+    gl.viewport(0, 0, width, height); 
     program = getProgram(gl, basicVert, basicFrag)!;
     timeUniformLocation = gl.getUniformLocation(program, 'u_time')!;
     sizeUniformLocation = gl.getUniformLocation(program, 'u_size')!;

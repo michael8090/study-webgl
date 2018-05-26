@@ -26,3 +26,12 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.demo-selector {
+  margin: 10px;
+  display: block;
+}
+
+.demo-selector select {
+  margin-left: 10px;
+}
