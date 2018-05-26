@@ -29,12 +29,13 @@ class App extends React.Component<{}, State> {
             basic.end();
         }
     }
+    private timer: number;
     private startWaves(canvas: HTMLCanvasElement) {
         waves.init(canvas);
         const t0 = Date.now();
-        function draw() {
+        const draw = () => {
             waves.draw(Date.now() - t0);
-            requestAnimationFrame(draw);
+            this.timer = requestAnimationFrame(draw);
         }
         draw();
     }
@@ -55,7 +56,7 @@ class App extends React.Component<{}, State> {
                 <h4>press blankspace to clear the canvas</h4>
             </Demo>
         ),
-        waves: <Demo didMount={this.startWaves} />
+        waves: <Demo didMount={this.startWaves} willUnmount={() => cancelAnimationFrame(this.timer)} />
     };
 
     public render() {
