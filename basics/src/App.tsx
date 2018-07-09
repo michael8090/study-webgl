@@ -56,7 +56,7 @@ class App extends React.Component<{}, State> {
                 <h4>press blankspace to clear the canvas</h4>
             </Demo>
         ),
-        waves: <Demo didMount={this.startWaves} willUnmount={() => cancelAnimationFrame(this.timer)} />
+        waves: <Demo didMount={(canvas) => this.startWaves(canvas)} willUnmount={() => cancelAnimationFrame(this.timer)} />
     };
 
     public render() {
